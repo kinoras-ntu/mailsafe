@@ -1,0 +1,4 @@
+
+# CNL: Content filter
+content_filter = scan:127.0.0.1:10025
+receive_override_options = no_address_mappings
