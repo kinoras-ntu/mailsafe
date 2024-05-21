@@ -35,6 +35,7 @@ $config['db_dsnw'] = 'mysql://roundcube:password@localhost/roundcube';
 // WARNING: After hostname change update of mail_host column in users table is
 //          required to match old user data records with the new host.
 $config['imap_host'] = 'localhost:143';
+
 // ----------------------------------
 // SMTP
 // ----------------------------------
@@ -52,8 +53,15 @@ $config['imap_host'] = 'localhost:143';
 // To specify different SMTP servers for different IMAP hosts provide an array
 // of IMAP host (no prefix or port) and SMTP server e.g. ['imap.example.com' => 'smtp.example.net']
 $config['smtp_host'] = 'localhost:25';
+
+// SMTP username (if required)
+// Note: %u variable will be replaced with current user's username
 $config['smtp_user'] = '';
+
+// SMTP password (if required)
+// Note: When set to '%p' current user's password will be used
 $config['smtp_pass'] = '';
+
 // provide an URL where a user can get support for this Roundcube installation
 // PLEASE DO NOT LINK TO THE ROUNDCUBE.NET WEBSITE HERE!
 $config['support_url'] = '';
@@ -62,15 +70,15 @@ $config['support_url'] = '';
 // in the session. For historical reasons it's called DES_key, but it's used
 // with any configured cipher_method (see below).
 // For the default cipher_method a required key length is 24 characters.
-$config['des_key'] = 'myPiNctvS4Ftrrk3VXKlwsx5';
-
-// Name your service. This is displayed on the login screen and in the window title
-$config['product_name'] = 'CNL Mailbox Mark II';
+$config['des_key'] = 'LMycxbqLv0EMAJaGBPKMzhYA';
 
 // ----------------------------------
 // PLUGINS
 // ----------------------------------
 // List of active plugins (in plugins/ directory)
 $config['plugins'] = [];
+
+// Make use of the built-in spell checker.
+$config['enable_spellcheck'] = true;
 
 $config['mail_domain'] = 'kinoras.me';

@@ -9,7 +9,7 @@ class MailMessage:
     def __init__(self, data):
         message = email.message_from_bytes(data)
 
-        self.key = ""
+        self.key = "key-here"
         self.subject = self.decode(message.get("Subject", "No Subject"))
         self.sender = self.decode(message.get("From", "No Sender"))
         self.body = ""
