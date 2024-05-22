@@ -15,7 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && \
         mailutils dovecot-imapd dovecot-pop3d python3-pip php-cli unzip && \ 
     DEBIAN_FRONTEND=noninteractive pip3 install openai && \
     mkdir /buildtmp && \
-    php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" \
+    php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 # Copy Files

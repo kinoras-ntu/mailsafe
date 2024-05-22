@@ -57,7 +57,7 @@ class MailMessage:
                     + "Please response in JSON format text. Do not use markdown syntax.\n"
                     + "- The first property is called 'probability'. It is a floating point number from 0 to 1 representing the probability of the message being spam (0: very unlikely, 1: very sure).\n"
                     + "- The second property is called 'reason', It is a string representing the main reason of your judgement. Since this is the title, it needs to be clear and brief.\n"
-                    + "- The third field is called 'description', it is a detailed explanation (within 40 words) of your decision to the user.\n\n"
+                    + "- The third field is called 'description', it is a detailed explanation (within 30 words) of your decision to the user.\n\n"
                     + "---\n\n"
                     + "# Problem\n\n"
                     + f"**Subject:**\n{self.subject}\n\n"
@@ -79,6 +79,6 @@ class MailMessage:
                 continue
         return {
             "probability": -1,
-            "reason": "Service unavailable",
-            "description": "We're currently unable to scan your email for spam. Please be cautious and avoid opening emails from unknown sources or clicking on any suspicious links.",
+            "reason": "Error",
+            "description": "Unable to check.",
         }
