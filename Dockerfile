@@ -43,7 +43,11 @@ RUN service mysql start && \
     cat /buildtmp/roundcube/roundcube.conf > /etc/apache2/sites-available/roundcube.conf && \
     a2ensite roundcube.conf && \
     echo "date.timezone = Asia/Macau" >> /etc/php/7.4/apache2/php.ini && \
-    mv /buildtmp/roundcube/config.inc.php /var/www/html/mailbox/config/config.inc.php
+    mv /buildtmp/roundcube/config.inc.php /var/www/html/mailbox/config/config.inc.php && \
+    composer require -d /var/www/html/mailbox/ -n kinoras/rcplus
+
+RUN chmod +x /buildtmp/utils/startup.sh && \
+    mv /buildtmp/utils/startup.sh /startup.sh
 
 EXPOSE 25 80 110 143 465 587 143 993 995
 
