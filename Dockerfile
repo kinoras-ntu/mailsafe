@@ -1,31 +1,31 @@
 FROM ubuntu:20.04
 
+# Copy Files
+COPY ./temp /buildtmp
+RUN chmod -R 755 /buildtmp
+
 # Prefill configurations
 RUN echo "postfix postfix/mailname string kinoras.me" | debconf-set-selections && \
     echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
 
-# Install Postfix, Dovecot and other tools
+# Install Postfix, Dovecot, Composer and other tools
 RUN DEBIAN_FRONTEND=noninteractive apt update && \
     DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
     DEBIAN_FRONTEND=noninteractive apt install -y \
-        init nano net-tools wget postfix rsyslog \
-        apache2 apache2-utils mariadb-server mariadb-client php libapache2-mod-php php-mysql \
-        php-net-ldap2 php-net-ldap3 php-imagick php-common php-gd php-imap php-json php-curl \
-        php-zip php-xml php-mbstring php-bz2 php-intl php-gmp php-net-smtp php-mail-mime \
-        mailutils dovecot-imapd dovecot-pop3d python3-pip php-cli unzip && \ 
-    DEBIAN_FRONTEND=noninteractive pip3 install openai && \
-    mkdir /buildtmp && \
+        init nano net-tools wget postfix rsyslog clamav-daemon apache2 apache2-utils mariadb-server \
+        mariadb-client php libapache2-mod-php php-mysql php-net-ldap2 php-net-ldap3 php-imagick \
+        php-common php-gd php-imap php-json php-curl php-zip php-xml php-mbstring php-bz2 php-intl \
+        php-gmp php-net-smtp php-mail-mime mailutils dovecot-imapd dovecot-pop3d python3-pip \
+        php-cli unzip dovecot-sieve dovecot-managesieved && \ 
+    DEBIAN_FRONTEND=noninteractive pip3 install openai pyclamd && \
     php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
-# Copy Files
-COPY ./temp /buildtmp
-
-# Move and setup filters
-RUN chmod -R 755 /buildtmp && \
-    mv /buildtmp/postfix/lab /etc/postfix/lab && \
+# Setup Postfix
+RUN mv /buildtmp/postfix/lab /etc/postfix/lab && \
     cat /buildtmp/postfix/tmp_main.cf >> /etc/postfix/main.cf && \
-    cat /buildtmp/postfix/tmp_master.cf >> /etc/postfix/master.cf
+    cat /buildtmp/postfix/tmp_master.cf >> /etc/postfix/master.cf && \
+    freshclam
 
 # Install Roundcube
 RUN wget https://github.com/roundcube/roundcubemail/releases/download/1.6.6/roundcubemail-1.6.6-complete.tar.gz && \
@@ -45,6 +45,9 @@ RUN service mysql start && \
     echo "date.timezone = Asia/Macau" >> /etc/php/7.4/apache2/php.ini && \
     mv /buildtmp/roundcube/config.inc.php /var/www/html/mailbox/config/config.inc.php && \
     composer require -d /var/www/html/mailbox/ -n kinoras/rcplus
+
+# Setup Dovecot
+RUN cat /buildtmp/dovecot/dovecot.conf >> /etc/dovecot/dovecot.conf
 
 RUN chmod +x /buildtmp/utils/startup.sh && \
     mv /buildtmp/utils/startup.sh /startup.sh

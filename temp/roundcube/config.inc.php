@@ -81,4 +81,12 @@ $config['plugins'] = [];
 // Make use of the built-in spell checker.
 $config['enable_spellcheck'] = true;
 
+// Set email domain (sent mail as user@kinoras.me)
 $config['mail_domain'] = 'kinoras.me';
+
+// Set default mailboxes
+$config['drafts_mbox'] = 'Drafts';
+$config['junk_mbox'] = 'Junk';
+$config['trash_mbox'] = 'Trash';
+$config['sent_mbox'] = 'Sent';
+$config['create_default_folders'] = true;
