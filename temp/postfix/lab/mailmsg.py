@@ -2,6 +2,7 @@ import email
 import base64
 import email.header
 import json
+import pyclamd
 from openai import OpenAI
 
 
@@ -13,6 +14,7 @@ class MailMessage:
         self.subject = self.decode(message.get("Subject", "No Subject"))
         self.sender = self.decode(message.get("From", "No Sender"))
         self.body = ""
+        self.attachments = []
 
         for part in message.walk():
             charset = part.get_content_charset()
@@ -21,6 +23,12 @@ class MailMessage:
                 if charset.lower() in ["gb2312", "gb18030", "big5"]:
                     content = base64.b64decode(content).decode(charset)
                 self.body += str(content)
+            elif part.get_content_maintype() == "multipart":
+                continue
+            elif part.get("Content-Disposition") is not None:
+                filename = part.get_filename()
+                attachment_data = part.get_payload(decode=True)
+                self.attachments.append((filename, attachment_data))
 
     def __str__(self):
         return str({"subject": self.subject, "sender": self.sender, "body": self.body})
@@ -31,7 +39,7 @@ class MailMessage:
             for word, encoding in email.header.decode_header(data)
         )
 
-    def check(self):
+    def checkSpam(self):
         count = 3
         while True and count > 0:
             try:
@@ -72,13 +80,61 @@ class MailMessage:
                 )
                 result = json.loads(completion.choices[0].message.content)
                 if all(k in result for k in ("probability", "reason", "description")):
-                    return result
+                    return {
+                        "prob": float(result["probability"]),
+                        "reason": str(result["reason"]),
+                        "descr": str(result["description"]),
+                    }
                 raise
             except:
                 count -= 1
                 continue
         return {
-            "probability": -1,
+            "prob": -1.0,
             "reason": "Error",
-            "description": "Unable to check.",
+            "descr": "Unable to check.",
         }
+
+    def checkVirus(self):
+        try:
+            if len(self.attachments) == 0:
+                return {
+                    "status": "Skipped",
+                    "descr": "No attachment",
+                }
+            cd = pyclamd.ClamdAgnostic()
+            failed_files = []
+            for filename, data in self.attachments:
+                if not bool(cd.scan_stream(data)):
+                    failed_files.append(f"\"{filename}\"")
+            if len(failed_files) == 0:
+                return {
+                    "status": "Pass",
+                    "descr": "Attached files contain no virus.",
+                }
+            elif len(failed_files) == 1:
+                return {
+                    "status": "Failed",
+                    "descr": f"This file probably contains virus: {failed_files[0]}.",
+                }
+            elif len(failed_files) <= 3:
+                return {
+                    "status": "Failed",
+                    "descr": f"These files probably contain virus: {", ".join(failed_files)}.",
+                }
+            else:
+                return {
+                    "status": "Failed",
+                    "descr": f"These files probably contain virus: {", ".join(failed_files[0:3])}, and {len(failed_files) - 3} more.",
+                }
+        except pyclamd.ConnectionError:
+            return {
+                "status": "Error",
+                "descr": "Could not connect to ClamAV daemon.",
+            }
+        except:
+            return {
+                "status": "Error",
+                "descr": "Unknown error occurred.",
+            }
+
