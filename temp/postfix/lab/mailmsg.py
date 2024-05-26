@@ -105,8 +105,9 @@ class MailMessage:
             cd = pyclamd.ClamdAgnostic()
             failed_files = []
             for filename, data in self.attachments:
-                if not bool(cd.scan_stream(data)):
-                    failed_files.append(f"\"{filename}\"")
+                result = cd.scan_stream(data)
+                if result is not None:
+                    failed_files.append(f'"{filename}"')
             if len(failed_files) == 0:
                 return {
                     "status": "Pass",
@@ -120,12 +121,12 @@ class MailMessage:
             elif len(failed_files) <= 3:
                 return {
                     "status": "Failed",
-                    "descr": f"These files probably contain virus: {", ".join(failed_files)}.",
+                    "descr": f"These files probably contain virus: {', '.join(failed_files)}.",
                 }
             else:
                 return {
                     "status": "Failed",
-                    "descr": f"These files probably contain virus: {", ".join(failed_files[0:3])}, and {len(failed_files) - 3} more.",
+                    "descr": f"These files probably contain virus: {', '.join(failed_files[0:3])}, and {len(failed_files) - 3} more.",
                 }
         except pyclamd.ConnectionError:
             return {

@@ -28,9 +28,9 @@ class CustomSMTPServer(smtpd.SMTPServer):
 
             if spam["prob"] >= 0.9:
                 return
-            
+
             status = self.parseSpamStatus(spam["prob"])
-            raw = f"{status}{spam["reason"]}{spam["descr"]}{virus["status"]}{virus["descr"]}"
+            raw = f"{status}{spam['reason']}{spam['descr']}{virus['status']}{virus['descr']}"
 
             data_string = Parser().parsestr(data.decode("utf-8"))
             data_string.add_header("X-RCP-Spam-Status", status)
