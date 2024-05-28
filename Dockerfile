@@ -52,7 +52,7 @@ RUN cat /buildtmp/dovecot/dovecot.conf >> /etc/dovecot/dovecot.conf && \
     mkdir /etc/dovecot/sieve && \
     mv /buildtmp/dovecot/sieve/default.sieve /etc/dovecot/sieve/default.sieve && \
     sievec /etc/dovecot/sieve/default.sieve && \
-    mv -f /buildtmp/dovecot/conf.d/* > /etc/dovecot/conf.d/
+    mv -f /buildtmp/dovecot/conf.d/* /etc/dovecot/conf.d/
 
 RUN chmod +x /buildtmp/utils/startup.sh && \
     mv /buildtmp/utils/startup.sh /startup.sh && \
