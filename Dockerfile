@@ -46,11 +46,17 @@ RUN service mysql start && \
     mv /buildtmp/roundcube/config.inc.php /var/www/html/mailbox/config/config.inc.php && \
     composer require -d /var/www/html/mailbox/ -n kinoras/rcplus
 
-# Setup Dovecot
-RUN cat /buildtmp/dovecot/dovecot.conf >> /etc/dovecot/dovecot.conf
+# Setup Dovecot & Dovecot Sieve
+RUN cat /buildtmp/dovecot/dovecot.conf >> /etc/dovecot/dovecot.conf && \
+    chmod a+w /var/mail && \
+    mkdir /etc/dovecot/sieve && \
+    mv /buildtmp/dovecot/sieve/default.sieve /etc/dovecot/sieve/default.sieve && \
+    sievec /etc/dovecot/sieve/default.sieve && \
+    mv -f /buildtmp/dovecot/conf.d/* > /etc/dovecot/conf.d/
 
 RUN chmod +x /buildtmp/utils/startup.sh && \
-    mv /buildtmp/utils/startup.sh /startup.sh
+    mv /buildtmp/utils/startup.sh /startup.sh && \
+    rm -rf /buildtmp
 
 EXPOSE 25 80 110 143 465 587 143 993 995
 
