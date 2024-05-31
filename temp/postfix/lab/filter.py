@@ -1,6 +1,7 @@
 # Author: Miroslav Houdek <miroslav.houdek@gmail.com>
 # License is, do whatever you wanna do with it (at least I think that that is what LGPL v3 says)
 
+import os
 import smtpd
 import hashlib
 import asyncore
@@ -8,6 +9,7 @@ import smtplib
 import traceback
 from email.parser import Parser
 from mailmsg import MailMessage
+from dotenv import load_dotenv
 
 
 class CustomSMTPServer(smtpd.SMTPServer):
@@ -38,7 +40,7 @@ class CustomSMTPServer(smtpd.SMTPServer):
             data_string.add_header("X-RCP-Spam-Description", spam["descr"])
             data_string.add_header("X-RCP-Virus-Status", virus["status"])
             data_string.add_header("X-RCP-Virus-Description", virus["descr"])
-            data_string.add_header("X-RCP-Hash", self.hash(raw, "iy9Rd@CG!MemBt"))
+            data_string.add_header("X-RCP-Hash", self.hash(raw))
             data = data_string.as_string().encode("utf-8")
 
             server = smtplib.SMTP("127.0.0.1", 10026)
@@ -87,7 +89,8 @@ class CustomSMTPServer(smtpd.SMTPServer):
         else:
             return "Error"
 
-    def hash(self, data, salt):
+    def hash(self, data):
+        salt = os.environ.get("HASH_SALT")
         return hashlib.sha256((data + salt).encode("utf-8")).hexdigest()
 
 

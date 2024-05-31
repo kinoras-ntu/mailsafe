@@ -17,7 +17,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && \
         php-common php-gd php-imap php-json php-curl php-zip php-xml php-mbstring php-bz2 php-intl \
         php-gmp php-net-smtp php-mail-mime mailutils dovecot-imapd dovecot-pop3d python3-pip \
         php-cli unzip dovecot-sieve dovecot-managesieved && \ 
-    DEBIAN_FRONTEND=noninteractive pip3 install openai pyclamd && \
+    DEBIAN_FRONTEND=noninteractive pip3 install openai pyclamd python-dotenv && \
     php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 

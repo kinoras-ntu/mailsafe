@@ -4,13 +4,15 @@ import email.header
 import json
 import pyclamd
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class MailMessage:
     def __init__(self, data):
         message = email.message_from_bytes(data)
 
-        self.key = "key-here"
         self.subject = self.decode(message.get("Subject", "No Subject"))
         self.sender = self.decode(message.get("From", "No Sender"))
         self.body = ""
@@ -64,8 +66,8 @@ class MailMessage:
                     + "**Response format:**\n"
                     + "Please response in JSON format text. Do not use markdown syntax.\n"
                     + "- The first property is called 'probability'. It is a floating point number from 0 to 1 representing the probability of the message being spam (0: very unlikely, 1: very sure).\n"
-                    + "- The second property is called 'reason', It is a string representing the main reason of your judgement. Since this is the title, it needs to be clear and brief.\n"
-                    + "- The third field is called 'description', it is a detailed explanation (within 30 words) of your decision to the user.\n\n"
+                    + "- The second property is called 'reason', it is a string representing the main reason of your judgement. Since this is the title, it needs to be clear and brief. (Do not just answer 'Unlikely Spam')\n"
+                    + "- The third field is called 'description', it is a detailed explanation (within 40 words) of your decision to the user.\n\n"
                     + "---\n\n"
                     + "# Problem\n\n"
                     + f"**Subject:**\n{self.subject}\n\n"
@@ -74,7 +76,7 @@ class MailMessage:
                     + "**Response:**"
                 )
 
-                completion = OpenAI(api_key=self.key).chat.completions.create(
+                completion = OpenAI().chat.completions.create(
                     model="gpt-4o",
                     messages=[{"role": "user", "content": prompt}],
                 )
@@ -138,4 +140,3 @@ class MailMessage:
                 "status": "Error",
                 "descr": "Unknown error occurred.",
             }
-
