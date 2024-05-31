@@ -76,7 +76,9 @@ $config['des_key'] = 'LMycxbqLv0EMAJaGBPKMzhYA';
 // PLUGINS
 // ----------------------------------
 // List of active plugins (in plugins/ directory)
-$config['plugins'] = [];
+$config['plugins'] = [
+    'markasjunk'
+];
 
 // Make use of the built-in spell checker.
 $config['enable_spellcheck'] = true;
