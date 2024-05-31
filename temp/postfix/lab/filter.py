@@ -28,9 +28,6 @@ class CustomSMTPServer(smtpd.SMTPServer):
             virus = message.checkVirus()
             print(spam, virus)
 
-            if spam["prob"] >= 0.9:
-                return
-
             status = self.parseSpamStatus(spam["prob"])
             raw = f"{status}{spam['reason']}{spam['descr']}{virus['status']}{virus['descr']}"
 
@@ -79,12 +76,14 @@ class CustomSMTPServer(smtpd.SMTPServer):
             print(traceback.format_exc())
         return
 
-    def parseSpamStatus(self, probability):
-        if probability >= 0.8:
+    def parseSpamStatus(self, p):
+        if p >= 0.9:
+            return "Certain"
+        if p >= 0.8:
             return "Probable"
-        elif probability >= 0.6:
+        elif p >= 0.6:
             return "Potential"
-        elif probability >= 0:
+        elif p >= 0:
             return "Unlikely"
         else:
             return "Error"
