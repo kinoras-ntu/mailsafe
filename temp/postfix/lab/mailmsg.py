@@ -3,8 +3,13 @@ import base64
 import email.header
 import json
 import pyclamd
+import uuid
+import os
+import mysql.connector
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import datetime
+from mysql.connector import Error
 
 load_dotenv()
 
@@ -13,6 +18,7 @@ class MailMessage:
     def __init__(self, data):
         message = email.message_from_bytes(data)
 
+        self.raw = data
         self.subject = self.decode(message.get("Subject", "No Subject"))
         self.sender = self.decode(message.get("From", "No Sender"))
         self.body = ""
@@ -140,3 +146,43 @@ class MailMessage:
                 "status": "Error",
                 "descr": "Unknown error occurred.",
             }
+
+    def backup(self, receivers, spam_status, virus_status):
+        try:
+            result = False
+            connection = mysql.connector.connect(
+                host=os.environ.get("DB_HOST"),
+                user=os.environ.get("DB_USERNAME"),
+                password=os.environ.get("DB_PASSWORD"),
+                database=os.environ.get("DB_DATABASE"),
+            )
+
+            if connection.is_connected():
+                filename = str(uuid.uuid4())
+                with open(f"/etc/postfix/lab/backup/{filename}", "wb") as file:
+                    file.write(self.raw)
+                cursor = connection.cursor()
+                cursor.execute(
+                    "INSERT INTO backups (receiver, sender, subject, datetime, filename, report) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (
+                        ", ".join(receivers),
+                        self.sender,
+                        self.subject,
+                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        filename,
+                        f"Spam: {spam_status}, Virus: {virus_status}",
+                    ),
+                )
+                connection.commit()
+                result = True
+        except Error as e:
+            print(f"Error: {e}")
+            result = False
+        except:
+            print("Backup: Unknown error.")
+            result = False
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+            return result

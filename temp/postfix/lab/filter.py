@@ -28,8 +28,11 @@ class CustomSMTPServer(smtpd.SMTPServer):
             virus = message.checkVirus()
             print(spam, virus)
 
-            status = self.parseSpamStatus(spam["prob"])
+            status, backup = self.parseSpamStatus(spam["prob"])
             raw = f"{status}{spam['reason']}{spam['descr']}{virus['status']}{virus['descr']}"
+
+            if backup or virus["status"] == "Failed":
+                message.backup(rcpttos, status, virus["status"])
 
             data_string = Parser().parsestr(data.decode("utf-8"))
             data_string.add_header("X-RCP-Spam-Status", status)
@@ -78,15 +81,15 @@ class CustomSMTPServer(smtpd.SMTPServer):
 
     def parseSpamStatus(self, p):
         if p >= 0.9:
-            return "Certain"
+            return "Certain", False
         if p >= 0.8:
-            return "Probable"
+            return "Probable", True
         elif p >= 0.6:
-            return "Potential"
+            return "Potential", True
         elif p >= 0:
-            return "Unlikely"
+            return "Unlikely", False
         else:
-            return "Error"
+            return "Error", False
 
     def hash(self, data):
         salt = os.environ.get("HASH_SALT")

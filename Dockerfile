@@ -17,7 +17,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && \
         php-common php-gd php-imap php-json php-curl php-zip php-xml php-mbstring php-bz2 php-intl \
         php-gmp php-net-smtp php-mail-mime mailutils dovecot-imapd dovecot-pop3d python3-pip \
         php-cli unzip dovecot-sieve dovecot-managesieved && \ 
-    DEBIAN_FRONTEND=noninteractive pip3 install openai pyclamd python-dotenv && \
+    DEBIAN_FRONTEND=noninteractive pip3 install openai pyclamd python-dotenv mysql-connector-python && \
     php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
@@ -35,14 +35,17 @@ RUN wget https://github.com/roundcube/roundcubemail/releases/download/1.6.6/roun
     chown -R www-data:www-data /var/www/html/mailbox/ && \
     chmod 755 -R /var/www/html/mailbox/
 
-# Setup Roundcube
+# Setup Roundcube & Admin Panel
 RUN service mysql start && \
     cat /buildtmp/roundcube/init.sql | mysql -u root && \
     mysql roundcube < /var/www/html/mailbox/SQL/mysql.initial.sql && \
+    mysql junox < /buildtmp/roundcube/junox.sql && \
     service mysql stop && \
     cat /buildtmp/roundcube/roundcube.conf > /etc/apache2/sites-available/roundcube.conf && \
     a2ensite roundcube.conf && \
     echo "date.timezone = Asia/Macau" >> /etc/php/7.4/apache2/php.ini && \
+    mv /buildtmp/admin /var/www/html/admin && \
+    mkdir /etc/postfix/lab/backup && \
     mv /buildtmp/roundcube/config.inc.php /var/www/html/mailbox/config/config.inc.php && \
     composer require -d /var/www/html/mailbox/ -n kinoras/rcplus
 

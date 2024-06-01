@@ -1,4 +1,5 @@
 CREATE DATABASE roundcube DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE junox DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER roundcube@localhost IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'roundcube'@'localhost' IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
