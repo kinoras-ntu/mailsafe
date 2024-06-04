@@ -15,7 +15,7 @@
 //       for Mysql: key, cipher, cert, capath, ca, verify_server_cert,
 //       for Postgres: application_name, sslmode, sslcert, sslkey, sslrootcert, sslcrl, sslcompression, service.
 //       e.g. 'mysql://roundcube:@localhost/roundcubemail?verify_server_cert=false'
-$config['db_dsnw'] = 'mysql://roundcube:password@localhost/roundcube';
+$config['db_dsnw'] = 'mysql://#_MYSQL:USERNAME_#:#_MYSQL:PASSWORD_#@localhost/roundcube';
 
 // ----------------------------------
 // IMAP
@@ -83,8 +83,8 @@ $config['plugins'] = [
 // Make use of the built-in spell checker.
 $config['enable_spellcheck'] = true;
 
-// Set email domain (sent mail as user@kinoras.me)
-$config['mail_domain'] = 'kinoras.me';
+// Set email domain (sent mail as user@domain.com)
+$config['mail_domain'] = '#_DOMAIN_#';
 
 // Set default mailboxes
 $config['drafts_mbox'] = 'Drafts';

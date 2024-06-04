@@ -4,14 +4,10 @@ import email.header
 import json
 import pyclamd
 import uuid
-import os
 import mysql.connector
 from openai import OpenAI
-from dotenv import load_dotenv
 from datetime import datetime
 from mysql.connector import Error
-
-load_dotenv()
 
 
 class MailMessage:
@@ -82,7 +78,7 @@ class MailMessage:
                     + "**Response:**"
                 )
 
-                completion = OpenAI().chat.completions.create(
+                completion = OpenAI(api_key="#_OPENAI:KEY_#").chat.completions.create(
                     model="gpt-4o",
                     messages=[{"role": "user", "content": prompt}],
                 )
@@ -151,10 +147,10 @@ class MailMessage:
         try:
             result = False
             connection = mysql.connector.connect(
-                host=os.environ.get("DB_HOST"),
-                user=os.environ.get("DB_USERNAME"),
-                password=os.environ.get("DB_PASSWORD"),
-                database=os.environ.get("DB_DATABASE"),
+                host="localhost",
+                user="#_MYSQL:USERNAME_#",
+                password="#_MYSQL:PASSWORD_#",
+                database="junox",
             )
 
             if connection.is_connected():

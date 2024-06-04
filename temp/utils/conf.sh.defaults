@@ -1,0 +1,31 @@
+#!/bin/bash
+
+directory="/buildtmp"
+
+patterns=(
+    "DOMAIN"
+    "MYSQL:USERNAME"
+    "MYSQL:PASSWORD"
+    "OPENAI:KEY"
+)
+
+replacements=(
+    "Replace this with your domain"
+    "Replace this with your MySQL admin username (choose one)"
+    "Replace this with your MySQL admin password (choose one)"
+    "Replace this with your OpenAI Key"
+)
+
+if [ ${#patterns[@]} -ne ${#replacements[@]} ]; then
+    echo "Error: The number of patterns and replacements do not match."
+    exit 1
+fi
+
+for file in $(find "$directory"); do
+    if [ -f "$file" ]; then
+        echo "Processing $file"
+        for i in "${!patterns[@]}"; do
+            sed -i -e "s/#_${patterns[i]}_#/${replacements[i]}/g" "$file"
+        done
+    fi
+done

@@ -1,8 +1,10 @@
 FROM ubuntu:20.04
 
-# Copy Files
+# Copy files
 COPY ./temp /buildtmp
-RUN chmod -R 755 /buildtmp
+RUN chmod -R 755 /buildtmp && \
+    chmod +x /buildtmp/utils/conf.sh && \
+    /buildtmp/utils/conf.sh
 
 # Prefill configurations
 RUN echo "postfix postfix/mailname string kinoras.me" | debconf-set-selections && \

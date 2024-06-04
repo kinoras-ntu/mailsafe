@@ -1,6 +1,6 @@
 <?php
 
-$rci_conn = mysqli_connect("localhost", "roundcube", "password", "roundcube");
+$rci_conn = mysqli_connect("localhost", "#_MYSQL:USERNAME_#", "#_MYSQL:PASSWORD_#", "roundcube");
 
 if (!$rci_conn) {
     die("Connection failed: " . mysqli_connect_error());
