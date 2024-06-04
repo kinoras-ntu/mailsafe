@@ -7,6 +7,7 @@ import hashlib
 import asyncore
 import smtplib
 import traceback
+from datetime import datetime
 from email.parser import Parser
 from mailmsg import MailMessage
 
@@ -22,13 +23,15 @@ class CustomSMTPServer(smtpd.SMTPServer):
             recipient.replace('"', "")
 
         try:
+            time_recv = self.log_received()
             message = MailMessage(data)
             spam = message.checkSpam()
             virus = message.checkVirus()
             dkim = message.checkDkim()
-            print(spam, virus, dkim)
 
-            status, backup = self.parseSpamStatus(spam["prob"])
+            self.log_report(spam, virus, dkim)
+
+            status, backup = self.parse_spam_status(spam["prob"])
             raw = f"{status}{spam['reason']}{spam['descr']}{virus['status']}{virus['descr']}{dkim}"
 
             if backup or virus["status"] == "Failed":
@@ -47,7 +50,7 @@ class CustomSMTPServer(smtpd.SMTPServer):
             server = smtplib.SMTP("127.0.0.1", 10026)
             server.sendmail(mailfrom, rcpttos, data)
             server.quit()
-            print("Sent Successfully")
+            self.log_exit(time_recv)
         except smtplib.SMTPException:
             print("Exception SMTPException")
             pass
@@ -80,7 +83,7 @@ class CustomSMTPServer(smtpd.SMTPServer):
             print(traceback.format_exc())
         return
 
-    def parseSpamStatus(self, p):
+    def parse_spam_status(self, p):
         if p >= 0.9:
             return "Certain", False
         if p >= 0.8:
@@ -94,6 +97,30 @@ class CustomSMTPServer(smtpd.SMTPServer):
 
     def hash(self, data):
         return hashlib.sha256(data.encode("utf-8")).hexdigest()
+
+    def log_received(self):
+        time = datetime.now()
+        print("------------------------------------------------")
+        print(f"Received: {time}")
+        return time
+
+    def log_report(self, spam, virus, dkim):
+        # Print spam info
+        _, status = self.parse_spam_status(spam["prob"])
+        print(f" > Spam: {spam['prob']} ({status})")
+        print(f"         {spam['reason']}")
+        print(f"         {spam['descr']}")
+        # Print virus info
+        print(f" > Virus: {virus['status']}")
+        print(f"          {virus['descr']}")
+        # Print DKIM status
+        print(f" > DKIM: {dkim}")
+
+    def log_exit(seld, time1):
+        time2 = datetime.now()
+        diff = (time2 - time1).total_seconds()
+        print(f"Sent: {time2}")
+        print(f"Processing time = {diff} seconds")
 
 
 server = CustomSMTPServer(("127.0.0.1", 10025), None)
