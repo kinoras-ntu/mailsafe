@@ -18,3 +18,4 @@ scan      unix  -       -       n       -       5       smtp
   -o smtpd_recipient_restrictions=permit_mynetworks,reject
   -o mynetworks=127.0.0.0/8
   -o smtpd_authorized_xforward_hosts=127.0.0.0/8
+  
