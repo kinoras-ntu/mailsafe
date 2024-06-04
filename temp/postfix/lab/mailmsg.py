@@ -4,6 +4,7 @@ import email.header
 import json
 import pyclamd
 import uuid
+import dkim
 import mysql.connector
 from openai import OpenAI
 from datetime import datetime
@@ -15,6 +16,7 @@ class MailMessage:
         message = email.message_from_bytes(data)
 
         self.raw = data
+        self.dkim = message.get("DKIM-Signature")
         self.subject = self.decode(message.get("Subject", "No Subject"))
         self.sender = self.decode(message.get("From", "No Sender"))
         self.body = ""
@@ -142,6 +144,12 @@ class MailMessage:
                 "status": "Error",
                 "descr": "Unknown error occurred.",
             }
+
+    def checkDkim(self):
+        if self.dkim:
+            return "Pass" if dkim.verify(self.raw) else "Failed"
+        else:
+            return "Skipped"
 
     def backup(self, receivers, spam_status, virus_status):
         try:

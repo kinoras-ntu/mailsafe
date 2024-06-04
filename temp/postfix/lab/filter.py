@@ -9,7 +9,6 @@ import smtplib
 import traceback
 from email.parser import Parser
 from mailmsg import MailMessage
-from dotenv import load_dotenv
 
 
 class CustomSMTPServer(smtpd.SMTPServer):
@@ -26,10 +25,11 @@ class CustomSMTPServer(smtpd.SMTPServer):
             message = MailMessage(data)
             spam = message.checkSpam()
             virus = message.checkVirus()
-            print(spam, virus)
+            dkim = message.checkDkim()
+            print(spam, virus, dkim)
 
             status, backup = self.parseSpamStatus(spam["prob"])
-            raw = f"{status}{spam['reason']}{spam['descr']}{virus['status']}{virus['descr']}"
+            raw = f"{status}{spam['reason']}{spam['descr']}{virus['status']}{virus['descr']}{dkim}"
 
             if backup or virus["status"] == "Failed":
                 message.backup(rcpttos, status, virus["status"])
@@ -40,6 +40,7 @@ class CustomSMTPServer(smtpd.SMTPServer):
             data_string.add_header("X-RCP-Spam-Description", spam["descr"])
             data_string.add_header("X-RCP-Virus-Status", virus["status"])
             data_string.add_header("X-RCP-Virus-Description", virus["descr"])
+            data_string.add_header("X-RCP-DKIM-Status", dkim)
             data_string.add_header("X-RCP-Hash", self.hash(raw))
             data = data_string.as_string().encode("utf-8")
 
@@ -92,8 +93,7 @@ class CustomSMTPServer(smtpd.SMTPServer):
             return "Error", False
 
     def hash(self, data):
-        salt = os.environ.get("HASH_SALT")
-        return hashlib.sha256((data + salt).encode("utf-8")).hexdigest()
+        return hashlib.sha256(data.encode("utf-8")).hexdigest()
 
 
 server = CustomSMTPServer(("127.0.0.1", 10025), None)

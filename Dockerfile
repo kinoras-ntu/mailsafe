@@ -18,8 +18,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && \
         mariadb-client php libapache2-mod-php php-mysql php-net-ldap2 php-net-ldap3 php-imagick \
         php-common php-gd php-imap php-json php-curl php-zip php-xml php-mbstring php-bz2 php-intl \
         php-gmp php-net-smtp php-mail-mime mailutils dovecot-imapd dovecot-pop3d python3-pip \
-        php-cli unzip dovecot-sieve dovecot-managesieved && \ 
-    DEBIAN_FRONTEND=noninteractive pip3 install openai pyclamd python-dotenv mysql-connector-python && \
+        php-cli unzip dovecot-sieve dovecot-managesieved opendkim opendkim-tools && \ 
+    DEBIAN_FRONTEND=noninteractive pip3 install openai dkimpy pyclamd python-dotenv mysql-connector-python && \
     php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
