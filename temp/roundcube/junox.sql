@@ -38,6 +38,9 @@ CREATE TABLE `administrators` (
 -- Dumping data for table `administrators`
 --
 
+INSERT INTO `administrators` (`id`, `username`, `password`) VALUES
+(1, '#_ADMIN:USERNAME_#', '#_ADMIN:PASSWORD_#');
+
 -- --------------------------------------------------------
 
 --

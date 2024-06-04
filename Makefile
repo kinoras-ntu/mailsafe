@@ -1,10 +1,8 @@
 # Definition of phony targets
 .PHONY: build start exec stop clean help
 
-# Definition of variables
-IMAGE = profon9
-CONTAINER = junox
-PORTS = 9025:25 9080:80 9110:110 9143:143 9465:465 9587:587 9993:993 9995:995
+# import variables
+include .env
 
 # Function to format port mappings
 define ports

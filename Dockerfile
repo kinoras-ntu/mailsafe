@@ -7,8 +7,7 @@ RUN chmod -R 755 /buildtmp && \
     /buildtmp/utils/conf.sh
 
 # Prefill configurations
-RUN echo "postfix postfix/mailname string kinoras.me" | debconf-set-selections && \
-    echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
+RUN cat /buildtmp/postfix/preconfig | debconf-set-selections
 
 # Install Postfix, Dovecot, Composer and other tools
 RUN DEBIAN_FRONTEND=noninteractive apt update && \

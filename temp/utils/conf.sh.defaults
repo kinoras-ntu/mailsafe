@@ -7,6 +7,8 @@ patterns=(
     "MYSQL:USERNAME"
     "MYSQL:PASSWORD"
     "OPENAI:KEY"
+    "ADMIN:USERNAME"
+    "ADMIN:PASSWORD"
 )
 
 replacements=(
@@ -14,12 +16,16 @@ replacements=(
     "Replace this with your MySQL admin username (choose one)"
     "Replace this with your MySQL admin password (choose one)"
     "Replace this with your OpenAI Key"
+    "Replace this with your admin panel username (choose one)"
+    "Replace this with your admin panel password (choose one)"
 )
 
 if [ ${#patterns[@]} -ne ${#replacements[@]} ]; then
     echo "Error: The number of patterns and replacements do not match."
     exit 1
 fi
+
+replacements[4]=$(echo -n "${replacements[4]}" | sha256sum | awk '{print $1}')
 
 for file in $(find "$directory"); do
     if [ -f "$file" ]; then
