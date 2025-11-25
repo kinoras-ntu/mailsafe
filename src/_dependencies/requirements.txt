@@ -1,0 +1,5 @@
+openai==1.33.0
+dkimpy==1.1.6
+pyclamd==0.4.0
+python-dotenv==1.0.1
+mysql-connector-python==8.4.0

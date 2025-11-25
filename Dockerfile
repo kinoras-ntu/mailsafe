@@ -1,5 +1,8 @@
 FROM ubuntu:20.04
 
+# Disable interactive frontend
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Copy files
 COPY ./src /tmp/src
 RUN chmod -R 755 /tmp/src && \
@@ -9,16 +12,11 @@ RUN chmod -R 755 /tmp/src && \
 # Prefill configurations
 RUN cat /tmp/src/postfix/preconfig | debconf-set-selections
 
-# Install Postfix, Dovecot, Composer and other tools
-RUN DEBIAN_FRONTEND=noninteractive apt update && \
-    DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y \
-        init nano net-tools wget postfix rsyslog clamav-daemon apache2 apache2-utils mariadb-server \
-        mariadb-client php libapache2-mod-php php-mysql php-net-ldap2 php-net-ldap3 php-imagick \
-        php-common php-gd php-imap php-json php-curl php-zip php-xml php-mbstring php-bz2 php-intl \
-        php-gmp php-net-smtp php-mail-mime mailutils dovecot-imapd dovecot-pop3d python3-pip \
-        php-cli unzip dovecot-sieve dovecot-managesieved opendkim opendkim-tools && \ 
-    DEBIAN_FRONTEND=noninteractive pip3 install openai dkimpy pyclamd python-dotenv mysql-connector-python && \
+# Install system packages
+RUN apt update && \
+    apt upgrade -y && \
+    sed "s/#.*//" /tmp/src/_dependencies/packages.txt | xargs apt install -y && \ 
+    pip3 install -r /tmp/src/_dependencies/requirements.txt && \
     php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" && \
     php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 

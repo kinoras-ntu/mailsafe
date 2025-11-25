@@ -1,0 +1,53 @@
+# Core utilities
+init
+nano
+net-tools
+wget
+unzip
+rsyslog
+
+# Mail services
+postfix
+mailutils
+dovecot-imapd
+dovecot-pop3d
+dovecot-sieve
+dovecot-managesieved
+opendkim
+opendkim-tools
+
+# Web services
+apache2
+apache2-utils
+
+# PHP and extensions
+php
+php-cli
+php-common
+php-mysql
+php-net-ldap2
+php-net-ldap3
+php-imagick
+php-gd
+php-imap
+php-json
+php-curl
+php-zip
+php-xml
+php-mbstring
+php-bz2
+php-intl
+php-gmp
+php-net-smtp
+php-mail-mime
+libapache2-mod-php
+
+# Database
+mariadb-server
+mariadb-client
+
+# Malware scanning
+clamav-daemon
+
+# Python
+python3-pip
