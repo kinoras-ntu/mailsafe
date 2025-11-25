@@ -2,4 +2,4 @@
 .DS_Store
 
 .env
-temp/utils/conf.sh
+src/utils/conf.sh

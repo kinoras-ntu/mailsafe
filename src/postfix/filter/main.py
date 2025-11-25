@@ -9,7 +9,7 @@ import smtplib
 import traceback
 from datetime import datetime
 from email.parser import Parser
-from mailmsg import MailMessage
+from message import MailMessage
 
 
 class CustomSMTPServer(smtpd.SMTPServer):

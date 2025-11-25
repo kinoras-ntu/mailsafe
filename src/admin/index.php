@@ -37,7 +37,7 @@ if (!isset($_SESSION))
                     <?php if (!isset($_SESSION["admin"])) : ?>
                         <a class="btn btn-outline-light" href="/admin">Sign in</a>
                     <?php else : ?>
-                        <a class="btn btn-outline-light" href="actions/signout.php">Sign out</a>
+                        <a class="btn btn-outline-light" href="actions/sign-out.php">Sign out</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -48,7 +48,7 @@ if (!isset($_SESSION))
         <?php if (!isset($_SESSION["admin"])) : ?>
             <h1 class="pt-2 pb-3">Sign in</h1>
             <?php echo print_error(); ?>
-            <form class="py-1" method="post" action="actions/signin.php">
+            <form class="py-1" method="post" action="actions/sign-in.php">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" name="username">
@@ -129,7 +129,7 @@ if (!isset($_SESSION))
                                     <td><?= htmlspecialchars($backup["subject"]) ?></td>
                                     <td><?= htmlspecialchars($backup["datetime"]) ?></td>
                                     <td><?= htmlspecialchars($backup["report"]) ?></td>
-                                    <td><a class="btn btn-small btn-primary" href="actions/getfile.php?token=<?= htmlspecialchars($backup["filename"]) ?>" target="_blank">View</a></td>
+                                    <td><a class="btn btn-small btn-primary" href="actions/get-file.php?token=<?= htmlspecialchars($backup["filename"]) ?>" target="_blank">View</a></td>
                                 </tr>
                         <?php
                             endwhile;

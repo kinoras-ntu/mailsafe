@@ -44,7 +44,7 @@ Once you are inside the container's shell, here are some useful commands you can
 
 -   **Check logs**: Print the following logs to help debugging.  
     `cat /var/log/mail.log` - for Postfix and Dovecot logs  
-    `cat /etc/postfix/lab/filter.log` - for the Python filter logs
+    `cat /etc/postfix/filter/filter.log` - for the Python filter logs
 
 ## 📝 License
 

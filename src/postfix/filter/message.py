@@ -158,12 +158,12 @@ class MailMessage:
                 host="localhost",
                 user="#_MYSQL:USERNAME_#",
                 password="#_MYSQL:PASSWORD_#",
-                database="junox",
+                database="app",
             )
 
             if connection.is_connected():
                 filename = str(uuid.uuid4())
-                with open(f"/etc/postfix/lab/backup/{filename}", "wb") as file:
+                with open(f"/etc/postfix/filter/backup/{filename}", "wb") as file:
                     file.write(self.raw)
                 cursor = connection.cursor()
                 cursor.execute(

@@ -5,7 +5,7 @@ date_default_timezone_set('Asia/Macau');
 $server_servername = "localhost";
 $server_username = "#_MYSQL:USERNAME_#";
 $server_password = "#_MYSQL:PASSWORD_#";
-$server_dbname = "junox";
+$server_dbname = "app";
 
 $conn = mysqli_connect($server_servername, $server_username, $server_password, $server_dbname);
 

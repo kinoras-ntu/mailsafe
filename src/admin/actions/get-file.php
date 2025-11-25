@@ -23,7 +23,7 @@ if (!is_string($token) || (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8
     exit;
 }
 
-$path = "/etc/postfix/lab/backup/$token";
+$path = "/etc/postfix/filter/backup/$token";
 
 if (!file_exists($path) || !is_readable($path)) {
     header("HTTP/1.0 404 Not Found");
