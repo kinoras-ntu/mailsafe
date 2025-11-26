@@ -4,9 +4,9 @@
 
 ### Setting your info and secrets
 
-1. Copy `/temp/utils/conf.sh.defaults` and rename it into `/temp/utils/conf.sh`.
+1. Copy `/src/_scripts/init.sh.defaults` and rename it into `/src/_scripts/init.sh`.
 
-2. In `/temp/utils/conf.sh`, replace the placeholders in the `replacements` section with in your config.
+2. In `/src/_scripts/init.sh`, replace the placeholders in the `replacements` section with in your config.
 
 ### Docker settings
 

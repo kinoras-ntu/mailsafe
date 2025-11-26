@@ -2,4 +2,4 @@
 .DS_Store
 
 .env
-src/utils/conf.sh
+src/_scripts/init.sh

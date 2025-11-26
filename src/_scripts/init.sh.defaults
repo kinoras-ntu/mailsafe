@@ -1,6 +1,7 @@
 #!/bin/bash
 
-directory="/buildtmp"
+# Replace placeholders in files with actual values
+directory="/tmp/src"
 
 patterns=(
     "DOMAIN"
@@ -35,3 +36,9 @@ for file in $(find "$directory"); do
         done
     fi
 done
+
+# Prefill configurations
+cat /tmp/src/postfix/preconfig | debconf-set-selections
+
+# Move startup script to root
+mv /tmp/src/utils/startup.sh /startup.sh
