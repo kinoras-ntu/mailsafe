@@ -16,9 +16,9 @@
 
 The following commands are available in the Makefile:
 
-- **build**: Build the Docker image (tag: `profon9`).
+- **build**: Build the Docker image (tag: `mailsafe`).
 
-- **start**: Start the container (name: `junox`) and run the Python filter script.
+- **start**: Start the container (name: `mailsafe-instance`) and run the Python filter script.
 
 - **shell**: Open an interactive Bash shell in the running container.
 
