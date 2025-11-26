@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Load environment variables from .env file
+ENV_FILE="/tmp/src/.env"
+if [ -f "$ENV_FILE" ]; then
+    echo "Loading environment variables from $ENV_FILE"
+    export $(grep -v '^#' "$ENV_FILE" | xargs)
+else
+    echo "Warning: .env file not found at $ENV_FILE"
+fi
+
 # Replace placeholders in files with actual values
 directory="/tmp/src"
 
@@ -13,12 +22,12 @@ patterns=(
 )
 
 replacements=(
-    "Replace this with your domain"
-    "Replace this with your MySQL admin username (choose one)"
-    "Replace this with your MySQL admin password (choose one)"
-    "Replace this with your OpenAI Key"
-    "Replace this with your admin panel username (choose one)"
-    "Replace this with your admin panel password (choose one)"
+    "${DOMAIN:-Replace this with your domain}"
+    "${MYSQL_USERNAME:-Replace this with your MySQL admin username (choose one)}"
+    "${MYSQL_PASSWORD:-Replace this with your MySQL admin password (choose one)}"
+    "${OPENAI_KEY:-Replace this with your OpenAI Key}"
+    "${ADMIN_USERNAME:-Replace this with your admin panel username (choose one)}"
+    "${ADMIN_PASSWORD:-Replace this with your admin panel password (choose one)}"
 )
 
 if [ ${#patterns[@]} -ne ${#replacements[@]} ]; then
@@ -41,4 +50,4 @@ done
 cat /tmp/src/postfix/preconfig | debconf-set-selections
 
 # Move startup script to root
-mv /tmp/src/utils/startup.sh /startup.sh
+mv /tmp/src/_scripts/startup.sh /startup.sh

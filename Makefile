@@ -6,7 +6,7 @@ include .env
 
 # Function to format port mappings
 define ports
-$(foreach port, $(PORTS), -p $(port))
+$(foreach port,$(PORTS),-p $(port))
 endef
 
 # Target to build the Docker image

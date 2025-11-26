@@ -4,7 +4,7 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Copy files
-COPY ./src /tmp/src
+COPY ./src ./.env /tmp/src/
 RUN chmod -R 755 /tmp/src
 
 # Initialize
