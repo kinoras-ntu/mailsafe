@@ -35,7 +35,7 @@ if [ ${#patterns[@]} -ne ${#replacements[@]} ]; then
     exit 1
 fi
 
-replacements[4]=$(echo -n "${replacements[4]}" | sha256sum | awk '{print $1}')
+replacements[5]=$(echo -n "${replacements[5]}" | sha256sum | awk '{print $1}')
 
 for file in $(find "$directory"); do
     if [ -f "$file" ]; then
